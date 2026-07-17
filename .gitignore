@@ -1,0 +1,7 @@
+# Generated local settings can include your private gift mapping.
+FunTimeLive-gifts.properties
+FunTimeLive.properties
+
+# Java build artifacts.
+build/
+output/
