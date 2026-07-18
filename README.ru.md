@@ -95,13 +95,27 @@ rcon.password=длинный_секретный_пароль
 В левой карточке одна строка означает одно правило:
 
 ```text
-Rose=rose
-Doughnut=donut
+Heart Me=heal
+GG=diamond
 Coffee=speed
-Gold Microphone=raid
 Ice Cream Cone=freeze
+Rose=rose
+Creeper=creeper
+Wave Firework=fireworks
+Choc Chip Cookie=animal
+Doughnut=donut
+Single Strike=rocket
+Little Crown=crusher
+Fairy Hide=ghost
 Sunglasses=blind
-Galaxy=chaos
+Whale Diving=trap
+Cheer Mic=raid
+Triple Thunder=tornado
+Meteor Shower=meteor
+Fiery Dragon=dragon
+Viking Hammer=wither
+Wolf=wolves
+TikTok Universe=chaos
 ```
 
 Слева пишется название подарка от TikTok/EasTok, справа — id эффекта. Сопоставление не зависит от регистра и ищет совпадение внутри названия: правило `ice cream` подойдёт для `Ice Cream Cone`.

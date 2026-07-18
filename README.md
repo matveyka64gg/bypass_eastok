@@ -95,13 +95,27 @@ Incoming messages appear in Minecraft as ` [TikTok] viewer » message `. FunTime
 The left panel contains one mapping per line:
 
 ```text
-Rose=rose
-Doughnut=donut
+Heart Me=heal
+GG=diamond
 Coffee=speed
-Gold Microphone=raid
 Ice Cream Cone=freeze
+Rose=rose
+Creeper=creeper
+Wave Firework=fireworks
+Choc Chip Cookie=animal
+Doughnut=donut
+Single Strike=rocket
+Little Crown=crusher
+Fairy Hide=ghost
 Sunglasses=blind
-Galaxy=chaos
+Whale Diving=trap
+Cheer Mic=raid
+Triple Thunder=tornado
+Meteor Shower=meteor
+Fiery Dragon=dragon
+Viking Hammer=wither
+Wolf=wolves
+TikTok Universe=chaos
 ```
 
 The left side is the gift name received from TikTok/EasTok. The right side is a FunTime effect id. Gift matching ignores case and supports partial names, so `ice cream cone` matches `ice cream`.

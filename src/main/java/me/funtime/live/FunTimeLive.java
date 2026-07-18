@@ -785,6 +785,9 @@ public final class FunTimeLive {
 
     private void loadDefaultMap() {
         giftMap.clear();
+        if (loadRegionalGiftMap()) {
+            return;
+        }
         giftMap.put("rose", "rose");
         giftMap.put("роза", "rose");
         // Exact English names from the installed EasTok/TikTok gift catalogue.
@@ -833,6 +836,32 @@ public final class FunTimeLive {
         giftMap.put("призрак", "ghost");
         giftMap.put("skull", "wither");
         giftMap.put("череп", "wither");
+    }
+
+    private boolean loadRegionalGiftMap() {
+        // Real gift names from the user's current EasTok regional catalogue.
+        giftMap.put("heart me", "heal");
+        giftMap.put("gg", "diamond");
+        giftMap.put("coffee", "speed");
+        giftMap.put("ice cream cone", "freeze");
+        giftMap.put("rose", "rose");
+        giftMap.put("creeper", "creeper");
+        giftMap.put("wave firework", "fireworks");
+        giftMap.put("choc chip cookie", "animal");
+        giftMap.put("doughnut", "donut");
+        giftMap.put("single strike", "rocket");
+        giftMap.put("little crown", "crusher");
+        giftMap.put("fairy hide", "ghost");
+        giftMap.put("sunglasses", "blind");
+        giftMap.put("whale diving", "trap");
+        giftMap.put("cheer mic", "raid");
+        giftMap.put("triple thunder", "tornado");
+        giftMap.put("meteor shower", "meteor");
+        giftMap.put("fiery dragon", "dragon");
+        giftMap.put("viking hammer", "wither");
+        giftMap.put("wolf", "wolves");
+        giftMap.put("tiktok universe", "chaos");
+        return true;
     }
 
     private void saveGiftMap() {
