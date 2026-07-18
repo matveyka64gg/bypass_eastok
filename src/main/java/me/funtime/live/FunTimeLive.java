@@ -787,6 +787,9 @@ public final class FunTimeLive {
         giftMap.clear();
         giftMap.put("rose", "rose");
         giftMap.put("роза", "rose");
+        // Exact English names from the installed EasTok/TikTok gift catalogue.
+        giftMap.put("doughnut", "donut");
+        giftMap.put("doughut", "donut");
         giftMap.put("donut", "donut");
         giftMap.put("пончик", "donut");
         giftMap.put("heart me", "heal");
@@ -794,10 +797,13 @@ public final class FunTimeLive {
         giftMap.put("gg", "diamond");
         giftMap.put("coffee", "speed");
         giftMap.put("кофе", "speed");
+        giftMap.put("ice cream cone", "freeze");
         giftMap.put("ice cream", "freeze");
         giftMap.put("мороженое", "freeze");
+        giftMap.put("sunglasses", "blind");
         giftMap.put("glasses", "blind");
         giftMap.put("очки", "blind");
+        giftMap.put("gold microphone", "raid");
         giftMap.put("microphone", "raid");
         giftMap.put("микрофон", "raid");
         giftMap.put("panda", "animal");
@@ -812,6 +818,7 @@ public final class FunTimeLive {
         giftMap.put("кит", "trap");
         giftMap.put("lion", "dragon");
         giftMap.put("лев", "dragon");
+        giftMap.put("galaxy", "chaos");
         giftMap.put("planet", "meteor");
         giftMap.put("планета", "meteor");
         giftMap.put("universe", "chaos");

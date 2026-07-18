@@ -95,11 +95,13 @@ rcon.password=длинный_секретный_пароль
 В левой карточке одна строка означает одно правило:
 
 ```text
-rose=rose
-donut=donut
-coffee=speed
-lion=dragon
-universe=chaos
+Rose=rose
+Doughnut=donut
+Coffee=speed
+Gold Microphone=raid
+Ice Cream Cone=freeze
+Sunglasses=blind
+Galaxy=chaos
 ```
 
 Слева пишется название подарка от TikTok/EasTok, справа — id эффекта. Сопоставление не зависит от регистра и ищет совпадение внутри названия: правило `ice cream` подойдёт для `Ice Cream Cone`.
@@ -118,7 +120,7 @@ fireworks, wolves, loot, ghost, wither
 
 1. Запусти Paper и FunTime Live.
 2. Нажми `Test RCON`.
-3. В **Local gift test** напиши, например, `Donut`.
+3. В **Local gift test** напиши, например, `Doughnut`.
 4. Введи любой ник зрителя и нажми `Run effect`.
 5. Проверь в Minecraft эффект и ответ сервера в `Activity Feed`.
 

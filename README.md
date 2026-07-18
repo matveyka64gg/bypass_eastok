@@ -95,11 +95,13 @@ Incoming messages appear in Minecraft as ` [TikTok] viewer » message `. FunTime
 The left panel contains one mapping per line:
 
 ```text
-rose=rose
-donut=donut
-coffee=speed
-lion=dragon
-universe=chaos
+Rose=rose
+Doughnut=donut
+Coffee=speed
+Gold Microphone=raid
+Ice Cream Cone=freeze
+Sunglasses=blind
+Galaxy=chaos
 ```
 
 The left side is the gift name received from TikTok/EasTok. The right side is a FunTime effect id. Gift matching ignores case and supports partial names, so `ice cream cone` matches `ice cream`.
@@ -118,7 +120,7 @@ Save the map after editing it. FunTime Live creates `FunTimeLive-gifts.propertie
 
 1. Start Paper and FunTime Live.
 2. Click `Test RCON`.
-3. Enter a gift name in **Local gift test**, for example `Donut`.
+3. Enter a gift name in **Local gift test**, for example `Doughnut`.
 4. Enter any viewer name and click `Run effect`.
 5. Check the Activity Feed for the routed effect and the Paper response.
 
