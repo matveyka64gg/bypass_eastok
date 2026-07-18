@@ -851,16 +851,16 @@ public final class FunTimeLive {
         giftMap.put("doughnut", "donut");
         giftMap.put("single strike", "rocket");
         giftMap.put("little crown", "crusher");
+        giftMap.put("cursed kick", "trap");
         giftMap.put("fairy hide", "ghost");
+        giftMap.put("mishka bear", "wolves");
         giftMap.put("sunglasses", "blind");
-        giftMap.put("whale diving", "trap");
-        giftMap.put("cheer mic", "raid");
+        giftMap.put("gold microphone", "raid");
         giftMap.put("triple thunder", "tornado");
         giftMap.put("meteor shower", "meteor");
-        giftMap.put("fiery dragon", "dragon");
+        giftMap.put("dragon crown", "dragon");
         giftMap.put("viking hammer", "wither");
-        giftMap.put("wolf", "wolves");
-        giftMap.put("tiktok universe", "chaos");
+        giftMap.put("galaxy", "chaos");
         return true;
     }
 

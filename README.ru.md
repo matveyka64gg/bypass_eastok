@@ -106,16 +106,16 @@ Choc Chip Cookie=animal
 Doughnut=donut
 Single Strike=rocket
 Little Crown=crusher
+Cursed Kick=trap
 Fairy Hide=ghost
+Mishka Bear=wolves
 Sunglasses=blind
-Whale Diving=trap
-Cheer Mic=raid
+Gold Microphone=raid
 Triple Thunder=tornado
 Meteor Shower=meteor
-Fiery Dragon=dragon
+Dragon Crown=dragon
 Viking Hammer=wither
-Wolf=wolves
-TikTok Universe=chaos
+Galaxy=chaos
 ```
 
 Слева пишется название подарка от TikTok/EasTok, справа — id эффекта. Сопоставление не зависит от регистра и ищет совпадение внутри названия: правило `ice cream` подойдёт для `Ice Cream Cone`.
