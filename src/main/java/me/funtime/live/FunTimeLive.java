@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.HttpURLConnection;
@@ -45,6 +46,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalTime;
@@ -54,6 +56,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.ArrayDeque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,10 +75,13 @@ public final class FunTimeLive {
     private static final Path DEFAULT_SERVER_PROPERTIES = Paths.get("H:\\MinecraftServerEastok\\server.properties");
     private static final Path APP_SETTINGS_FILE = Paths.get("FunTimeLive.properties");
     private static final Path MAP_FILE = Paths.get("FunTimeLive-gifts.properties");
+    private static final Path EASTOK_LOG_DIRECTORY = Paths.get(System.getProperty("user.home"), "AppData", "Roaming", "EasTok", "Logs");
     private static final DateTimeFormatter CLOCK = DateTimeFormatter.ofPattern("HH:mm:ss");
     private static final Pattern JSON_VALUE = Pattern.compile("\\\"([^\\\"]+)\\\"\\s*:\\s*\\\"((?:\\\\.|[^\\\"])*)\\\"");
+    private static final Pattern EASTOK_GIFT_LOG = Pattern.compile("\\[Gift-Main-Enhanced\\].*?:\\s*(.+?)\\(id=\\d+\\)");
 
     private final Map<String, String> giftMap = new LinkedHashMap<>();
+    private final ArrayDeque<LoggedGift> pendingEasTokGifts = new ArrayDeque<>();
     private final Random random = new Random();
     private JFrame frame;
     private JLabel status;
@@ -91,6 +97,9 @@ public final class FunTimeLive {
     private volatile Path serverPropertiesPath = DEFAULT_SERVER_PROPERTIES;
     private volatile String configuredPlayer = "motyasm";
     private volatile HttpServer webhook;
+
+    private record LoggedGift(String name, long receivedAt) {
+    }
 
     public static void main(String[] args) {
         if (args.length == 1 && args[0].equals("--self-test")) {
@@ -160,6 +169,7 @@ public final class FunTimeLive {
         loadServerConnection();
         createWindow();
         startWebhook();
+        startEasTokGiftWatcher();
     }
 
     private void createWindow() {
@@ -613,10 +623,113 @@ public final class FunTimeLive {
             webhook.start();
             setStatus("Webhook ready on port " + WEBHOOK_PORT, new Color(40, 130, 70));
             log("Webhook is listening for EasTok events.");
+            log("EasTok gift body: {\"user\":\"{nickname}\",\"gift\":\"{gift_name}\"}");
         } catch (IOException exception) {
             setStatus("Webhook failed: " + exception.getMessage(), new Color(185, 45, 45));
             log("Webhook could not start: " + exception.getMessage());
         }
+    }
+
+    private void startEasTokGiftWatcher() {
+        Thread watcher = new Thread(() -> {
+            Path activeLog = null;
+            long position = 0;
+            while (true) {
+                try {
+                    Path newestLog = newestEasTokLog();
+                    if (newestLog == null) {
+                        Thread.sleep(1000);
+                        continue;
+                    }
+                    if (!newestLog.equals(activeLog)) {
+                        activeLog = newestLog;
+                        position = Files.size(activeLog);
+                    }
+                    long length = Files.size(activeLog);
+                    if (length < position) {
+                        position = 0;
+                    }
+                    if (length > position) {
+                        try (RandomAccessFile reader = new RandomAccessFile(activeLog.toFile(), "r")) {
+                            reader.seek(position);
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                Matcher matcher = EASTOK_GIFT_LOG.matcher(line);
+                                if (matcher.find()) {
+                                    enqueueEasTokGift(matcher.group(1).trim());
+                                }
+                            }
+                            position = reader.getFilePointer();
+                        }
+                    }
+                    Thread.sleep(250);
+                } catch (Exception exception) {
+                    log("EasTok log watcher: " + exception.getMessage());
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException interruptedException) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
+                }
+            }
+        }, "funtime-eastok-log-watcher");
+        watcher.setDaemon(true);
+        watcher.start();
+        log("EasTok log fallback is enabled.");
+    }
+
+    private Path newestEasTokLog() throws IOException {
+        if (!Files.isDirectory(EASTOK_LOG_DIRECTORY)) {
+            return null;
+        }
+        Path newest = null;
+        try (DirectoryStream<Path> files = Files.newDirectoryStream(EASTOK_LOG_DIRECTORY, "eastok-*.log")) {
+            for (Path file : files) {
+                if (newest == null || Files.getLastModifiedTime(file).compareTo(Files.getLastModifiedTime(newest)) > 0) {
+                    newest = file;
+                }
+            }
+        }
+        return newest;
+    }
+
+    private void enqueueEasTokGift(String giftName) {
+        synchronized (pendingEasTokGifts) {
+            pendingEasTokGifts.addLast(new LoggedGift(giftName, System.currentTimeMillis()));
+            while (pendingEasTokGifts.size() > 20) {
+                pendingEasTokGifts.removeFirst();
+            }
+        }
+        log("EasTok event queued: " + giftName);
+    }
+
+    private void resolveTemplateGift(String viewer) {
+        LoggedGift event = null;
+        long deadline = System.currentTimeMillis() + 1800;
+        while (event == null && System.currentTimeMillis() < deadline) {
+            synchronized (pendingEasTokGifts) {
+                while (!pendingEasTokGifts.isEmpty() && System.currentTimeMillis() - pendingEasTokGifts.peekFirst().receivedAt() > 20000) {
+                    pendingEasTokGifts.removeFirst();
+                }
+                if (!pendingEasTokGifts.isEmpty()) {
+                    event = pendingEasTokGifts.removeFirst();
+                }
+            }
+            if (event == null) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException interruptedException) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        }
+        if (event == null) {
+            log("No fresh EasTok gift was found for the template webhook.");
+            return;
+        }
+        handleGift(event.name(), viewer.isBlank() ? "TikTok viewer" : viewer, "EasTok log fallback");
     }
 
     private void handleWebhook(HttpExchange exchange) throws IOException {
@@ -634,8 +747,10 @@ public final class FunTimeLive {
             return;
         }
         if (isTemplateValue(gift)) {
-            sendHttp(exchange, 200, "test accepted");
-            log("EasTok template test received (" + gift + "). No Minecraft effect was run. Use Local gift test for a real effect.");
+            sendHttp(exchange, 200, "template fallback accepted");
+            String requestedViewer = isTemplateValue(viewer) ? "TikTok viewer" : viewer;
+            log("EasTok sent a literal template (" + gift + "). Looking up the real gift in the EasTok log.");
+            new Thread(() -> resolveTemplateGift(requestedViewer), "funtime-eastok-fallback").start();
             return;
         }
         sendHttp(exchange, 200, "ok");
