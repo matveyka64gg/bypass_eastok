@@ -15,6 +15,7 @@ No public server, domain name, port forwarding, or cloud account is required. Ea
 - Shows an animated dark control panel with connection status and an activity feed.
 - Includes a local gift test, so effects can be checked without starting a TikTok LIVE.
 - Stores the server path and the gift map locally. Personal configuration is ignored by Git.
+- Recovers live gifts when an EasTok webhook sends literal template text such as `{gift_name}`.
 
 ## Architecture
 
@@ -75,7 +76,9 @@ Create **one** `Any gift` trigger in EasTok. Add the `HTTP Webhook` action and u
 | JSON body | `{"user":"{nickname}","gift":"{gift_name}"}` |
 | JSON headers | `{"Content-Type":"application/json"}` |
 
-EasTok's own Test button sends template text such as `{gift_name}`, not a real TikTok gift. FunTime Live deliberately accepts that request with `200 OK` but does not run a Minecraft effect. Use the app's **Local gift test** area to test a real effect, for example `Donut`.
+EasTok's own Test button sends template text such as `{gift_name}`, not a real TikTok gift. It is accepted with `200 OK`, but no Minecraft effect is expected because there is no real gift event to match.
+
+Some EasTok builds may also send literal template text for a live gift. FunTime Live watches the local EasTok log at `%APPDATA%\EasTok\Logs`, takes the matching fresh gift event, and routes the real gift automatically. Keep EasTok open while streaming. Use **Local gift test** to verify an effect before a stream, for example with `Doughnut`.
 
 ## TikTok Chat in Minecraft
 
@@ -144,7 +147,8 @@ Save the map after editing it. FunTime Live creates `FunTimeLive-gifts.propertie
 | --- | --- |
 | `Webhook failed: Address already in use` | Close another FunTime Live instance, then start the app again. |
 | `RCON: failed` | Start Paper, check `enable-rcon=true`, verify the server path, then click `Reload server`. |
-| EasTok test has no Minecraft effect | Expected. The EasTok Test button sends placeholders, not a live gift name. |
+| EasTok test has no Minecraft effect | Expected. It sends placeholders without a real TikTok gift event. |
+| A live gift sends `{gift_name}` literally | Start FunTime Live before the stream and keep EasTok open. Check the Activity Feed for `EasTok event queued` and `EasTok log fallback`. |
 | A live gift gives fallback loot | Add its exact name to the gift map, save it, then test again. |
 | Plugin command is unknown | Install the current `FunTimeItems.jar` and fully restart Paper. |
 

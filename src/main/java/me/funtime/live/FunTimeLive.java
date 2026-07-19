@@ -294,7 +294,7 @@ public final class FunTimeLive {
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
         log("Webhook URL: http://127.0.0.1:" + WEBHOOK_PORT + "/eastok/gift");
-        log("Use EasTok HTTP Webhook with value1={username}, value3={giftname}.");
+        log("Use EasTok HTTP Webhook with {nickname} and {gift_name} in the JSON body.");
     }
 
     private JButton windowButton(String symbol, String tooltip, Color hoverColor, Runnable action) {
